@@ -1,9 +1,19 @@
 const express = require("express");
 const router = express.Router();
 
-const farmerController = require("../controllers/farmerController");
-const verifyToken = require("../middleware/authMiddleware");
+const {
+  createFarmer,
+  getFarmers,
+  deleteFarmer
+} = require("../controllers/farmerController");
 
-router.post("/create", verifyToken, farmerController.createFarmer);
+// CREATE
+router.post("/create", createFarmer);
+
+// GET ALL
+router.get("/", getFarmers);
+
+// DELETE
+router.delete("/:id", deleteFarmer);
 
 module.exports = router;

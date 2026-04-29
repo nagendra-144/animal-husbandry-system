@@ -15,13 +15,32 @@ exports.createFarmer = async (req, res) => {
     });
 
   } catch (error) {
+  console.error("REAL ERROR:", error);  // 👈 important
+  res.status(500).json({
+    error: error.message   // 👈 show actual issue
+  });
+}
+};
 
-    console.log("DATABASE ERROR:", error);   // IMPORTANT
+// GET ALL FARMERS
+exports.getFarmers = async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM farmers ORDER BY id DESC");
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch farmers" });
+  }
+};
 
-    res.status(500).json({
-      error: "Failed to create farmer",
-      details: error.message
-    });
-
+// DELETE FARMER
+exports.deleteFarmer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("DELETE FROM farmers WHERE id=$1", [id]);
+    res.json({ message: "Farmer deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to delete farmer" });
   }
 };
